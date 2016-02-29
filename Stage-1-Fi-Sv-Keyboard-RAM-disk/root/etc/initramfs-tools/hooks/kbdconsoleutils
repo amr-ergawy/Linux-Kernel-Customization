@@ -1,0 +1,36 @@
+#!/bin/sh
+#
+# Initramfs-tools hook script
+#
+# An ugly script for adding installed debian kbd package
+# Amr Ergawy, 2011
+# TODO: Add validations for files exitance
+
+PREREQ=""
+
+prereqs()
+{
+	echo "$PREREQ"
+}
+
+case $1 in
+prereqs)
+	prereqs
+	exit 0
+	;;
+esac
+
+. /usr/share/initramfs-tools/hook-functions
+
+# adding kbd
+cp -r /home/aergawy/kbd-inst/bin/* "${DESTDIR}/bin/"
+# cp -r /home/aergawy/kbd-inst/lib/* "${DESTDIR}/lib/"
+cp -r /home/aergawy/fi-tty-mappings/lib/* "${DESTDIR}/lib/"
+
+# adding necessary binaries
+copy_exec /usr/bin/less /bin/
+copy_exec /usr/bin/setsid /bin/
+
+# adding the default terminfo file, linux
+mkdir -p "${DESTDIR}/lib/terminfo/l"
+cp /lib/terminfo/l/linux "${DESTDIR}/lib/terminfo/l/"

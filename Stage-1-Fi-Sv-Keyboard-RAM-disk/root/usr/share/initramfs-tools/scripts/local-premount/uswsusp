@@ -1,0 +1,44 @@
+#!/bin/sh
+#
+# Initramfs-tools script
+#
+# Copyright 2006 Tim Dijstra <tim@famdijkstra.org>
+# Released under GPLv2
+
+
+PREREQ=""
+
+prereqs()
+{
+	echo "$PREREQ"
+}
+
+case $1 in
+# get pre-requisites
+prereqs)
+	prereqs
+	exit 0
+	;;
+esac
+
+if grep -q noresume /proc/cmdline 2> /dev/null; then
+    exit 0
+fi
+
+if [ ! -e /sys/class/misc/snapshot/dev ]; then
+    # Kernel doesn't support snapshots
+    exit 0
+fi
+
+DEV=`cat /sys/class/misc/snapshot/dev `
+
+if [ ! -c /dev/snapshot ]; then
+     mknod /dev/snapshot c ${DEV%:*} ${DEV#*:}
+fi
+
+if [ ! -x /sbin/resume ]; then
+    #log_warning "Can't resume, no /sbin/resume on initramfs"
+    exit 0
+fi
+
+/sbin/resume

@@ -1,0 +1,27 @@
+#!/bin/sh
+#
+# Initramfs-tools hook script
+#
+# An ugly script for adding binaries to ramdisk
+# Amr Ergawy, 2011
+# TODO: Add validations for files exitance
+
+PREREQ=""
+
+prereqs()
+{
+	echo "$PREREQ"
+}
+
+case $1 in
+prereqs)
+	prereqs
+	exit 0
+	;;
+esac
+
+. /usr/share/initramfs-tools/hook-functions
+
+# adding necessary binaries
+copy_exec /usr/bin/less /bin/
+copy_exec /usr/bin/setsid /bin/
